@@ -26,11 +26,11 @@ void cpu_load(struct cpu *cpu)
   // TODO: Replace this with something less hard-coded
 }
 
-unsigned char cpu_ram_read(struct cpu *cpu, int index){
+unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index){
   return cpu->ram[index];
 };
 
-void cpu_ram_write(struct cpu *cpu, int index, char value){
+void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value){
   cpu->ram[index] = value;
 }
 
@@ -63,13 +63,22 @@ void cpu_run(struct cpu *cpu)
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
     // 6. Move the PC to the next instruction.
+    unsigned char IR = cpu_ram_read(cpu, cpu->PC);
+    unsigned char operandA = cpu_ram_read(cpu, cpu->PC+1);
+    unsigned char operandB = cpu_ram_read(cpu, cpu->PC+2);
+    alu(cpu, IR, operandA, operandB);
   }
 }
-
+ 
 /**
  * Initialize a CPU struct
  */
 void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
+  cpu->PC = 0;
+  cpu->FL = 0;
+  memset(cpu->registers, 0, sizeof(cpu->registers));
+  memset(cpu->ram, 0, sizeof(cpu->ram));
+  cpu->registers[7] = 0xF4;
 }
