@@ -6,11 +6,11 @@ struct cpu {
   // TODO
   // PC
   unsigned int PC;
+  unsigned char FL;
   // registers (array)
   unsigned char registers[8];
   // ram (array)
   unsigned char ram[256];
-  unsigned char FL;
 };
 
 // ALU operations
@@ -37,25 +37,25 @@ enum alu_op {
 #define LDI  0b10000010
 #define PRN  0b01000111
 // TODO: more instructions here. These can be used in cpu_run().
-#define ADD  10100000 
-#define SUB  10100001 
-#define MUL  10100010 
-#define DIV  10100011 
-#define MOD  10100100 
-#define INC  01100101 
-#define DEC  01100110 
-#define CMP  10100111 
-#define AND  10101000 
-#define NOT  01101001 
-#define OR   10101010 
-#define XOR  10101011 
-#define SHL  10101100 
-#define SHR  10101101
-#define HLT  00000001
+#define ADD  0b10100000 
+#define SUB  0b10100001 
+#define MUL  0b10100010 
+#define DIV  0b10100011 
+#define MOD  0b10100100 
+#define INC  0b01100101 
+#define DEC  0b01100110 
+#define CMP  0b10100111 
+#define AND  0b10101000 
+#define NOT  0b01101001 
+#define OR   0b10101010 
+#define XOR  0b10101011 
+#define SHL  0b10101100 
+#define SHR  0b10101101
+#define HLT  0b00000001
 
 // Function declarations
 
-extern void cpu_load(struct cpu *cpu);
+extern void cpu_load(char *filename, struct cpu *cpu);
 extern void cpu_init(struct cpu *cpu);
 extern void cpu_run(struct cpu *cpu);
 
