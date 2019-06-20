@@ -89,6 +89,9 @@ void cpu_run(struct cpu *cpu)
       case MUL:
         cpu->registers[operandA] = cpu->registers[operandA] * cpu->registers[operandB];
         break;
+      case ADD:
+        cpu->registers[operandA] = cpu->registers[operandA] + cpu->registers[operandB];
+        break;
       case PUSH:
         cpu->SP--;
         num = cpu->ram[cpu->PC + 1];
@@ -99,6 +102,17 @@ void cpu_run(struct cpu *cpu)
         num = cpu->ram[cpu->PC + 1];
         cpu->registers[num] = cpu->ram[cpu->SP];
         cpu->SP++;
+        break;
+      case CALL:
+        cpu->SP--;
+        cpu->ram[cpu->SP] = cpu->PC + 2;
+        num = cpu->ram[cpu->PC + 1];
+        cpu->PC = cpu->registers[num];
+        break;
+      case RET:
+        num = cpu->ram[cpu->SP];
+        cpu->SP++;
+        cpu->PC = num;
         break;
       default:
         fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);

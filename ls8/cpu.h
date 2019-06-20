@@ -37,7 +37,7 @@ enum alu_op {
 
 #define LDI  0b10000010
 #define PRN  0b01000111
-// #define ADD  0b10100000 
+#define ADD  0b10100000 
 // #define SUB  0b10100001 
 #define MUL  0b10100010 
 // #define DIV  0b10100011 
@@ -53,6 +53,8 @@ enum alu_op {
 // #define SHR  0b10101101
 #define PUSH 0b01000101
 #define POP  0b01000110
+#define CALL 0b01010000
+#define RET  0b00010001
 #define HLT  0b00000001
 
 // Function declarations
