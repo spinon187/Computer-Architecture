@@ -11,6 +11,7 @@ struct cpu {
   unsigned char registers[8];
   // ram (array)
   unsigned char ram[256];
+  unsigned int SP;
 };
 
 // ALU operations
@@ -50,6 +51,8 @@ enum alu_op {
 // #define XOR  0b10101011 
 // #define SHL  0b10101100 
 // #define SHR  0b10101101
+#define PUSH 0b01000101
+#define POP  0b01000110
 #define HLT  0b00000001
 
 // Function declarations

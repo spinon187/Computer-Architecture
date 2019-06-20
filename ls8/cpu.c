@@ -65,6 +65,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char operandB = 0;
     unsigned char IR = cpu_ram_read(cpu, cpu->PC);
     unsigned int num_operands = IR >> 6;
+    unsigned char num, val;
     if(num_operands == 2){
       operandA = cpu_ram_read(cpu, (cpu->PC +1) & 0xff);
       operandB = cpu_ram_read(cpu, (cpu->PC +2) & 0xff);
@@ -88,10 +89,23 @@ void cpu_run(struct cpu *cpu)
       case MUL:
         cpu->registers[operandA] = cpu->registers[operandA] * cpu->registers[operandB];
         break;
+      case PUSH:
+        cpu->SP--;
+        num = cpu->ram[cpu->PC + 1];
+        val = cpu->registers[num];
+        cpu->ram[cpu->SP] = val;
+        break;
+      case POP:
+        num = cpu->ram[cpu->PC + 1];
+        cpu->registers[num] = cpu->ram[cpu->SP];
+        cpu->SP++;
+        break;
       default:
         fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
         exit(3);
     }
+
+    // printf("TRACE: cpu-PC: %d: cpu-IR: %02X    operand0: %02x operand1: %02x\n", cpu->PC, IR, operandA, operandB);
 
     if(!instruction_set_pc) {
       cpu->PC += num_operands + 1;
@@ -110,5 +124,6 @@ void cpu_init(struct cpu *cpu)
   cpu->FL = 0;
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));
-  // cpu->registers[7] = 0xF4;
+  cpu->registers[7] = 0xF4;
+  cpu->SP = cpu->registers[7];
 }
