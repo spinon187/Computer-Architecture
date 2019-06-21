@@ -114,12 +114,52 @@ void cpu_run(struct cpu *cpu)
         cpu->SP++;
         cpu->PC = num;
         break;
+      case CMP:
+        // printf("CMP\n");
+        if(cpu->registers[operandA] < cpu->registers[operandB]){
+          cpu->FL[7] = 0;
+          cpu->FL[6] = 0;
+          cpu->FL[5] = 1;
+        }
+        else if(cpu->registers[operandA] > cpu->registers[operandB]){
+          cpu->FL[7] = 0;
+          cpu->FL[6] = 1;
+          cpu->FL[5] = 0;
+        }
+        else if(cpu->registers[operandA] == cpu->registers[operandB]) {
+          cpu->FL[7] = 1;
+          cpu->FL[6] = 0;
+          cpu->FL[5] = 0;
+        }
+        break;
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
+        // printf("JMP\n");
+        break;
+      case JEQ:
+        if(cpu->FL[7] == 1){
+          cpu->PC = cpu->registers[operandA];
+          // printf("JEQ\n");
+        }
+        else{
+          cpu->PC +=2;
+        }
+        break;
+      case JNE:
+        if(cpu->FL[7] == 0){
+          cpu->PC = cpu->registers[operandA];
+          // printf("JNE\n");
+        }
+        else{
+          cpu->PC +=2;
+        }
+        break;
       default:
         fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
         exit(3);
     }
 
-    // printf("TRACE: cpu-PC: %d: cpu-IR: %02X    operand0: %02x operand1: %02x\n", cpu->PC, IR, operandA, operandB);
+    // printf("TRACE: cpu-PC: %d: cpu-IR: %02X  %d  operand0: %02x operand1: %02x\n", cpu->PC, IR, cpu->FL, operandA, operandB);
 
     if(!instruction_set_pc) {
       cpu->PC += num_operands + 1;
@@ -135,7 +175,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
-  cpu->FL = 0;
+  memset(cpu->FL, 0, sizeof(cpu->FL));
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));
   cpu->registers[7] = 0xF4;
